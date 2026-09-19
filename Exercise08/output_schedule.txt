@@ -1,0 +1,10 @@
+-- chunk=1 --
+Time taken: 0.168234 s
+-- chunk=4 --
+Time taken: 0.133892 s
+-- chunk=16 --
+Time taken: 0.150604 s
+-- chunk=64 --
+Time taken: 0.147314 s
+-- chunk=256 --
+Time taken: 0.152881 s

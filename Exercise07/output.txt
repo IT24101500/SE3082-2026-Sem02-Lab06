@@ -1,0 +1,4 @@
+threads = 1, area = 1.510318, time = 2.380606 s
+threads = 2, area = 1.510318, time = 2.076416 s
+threads = 3, area = 1.510318, time = 1.439832 s
+threads = 4, area = 1.510318, time = 1.094265 s

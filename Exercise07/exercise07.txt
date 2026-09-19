@@ -1,0 +1,88 @@
+Exercise 7: Area of the Mandelbrot Set
+=========================================
+
+Command used:
+  gcc -O2 -fopenmp mandelbrot.c -o mandelbrot
+  ./mandelbrot
+
+Output:
+  threads = 1, area = 1.510318, time = 2.380606 s
+  threads = 2, area = 1.510318, time = 2.076416 s
+  threads = 3, area = 1.510318, time = 1.439832 s
+  threads = 4, area = 1.510318, time = 1.094265 s
+
+Approach:
+----------
+A NPOINTS x NPOINTS (1000 x 1000) grid of complex points c is generated
+over a box covering the upper half of the Mandelbrot set (real axis
+[-2, 0.5], imaginary axis [0, 1.125] - using the symmetry of the set
+about the real axis to only scan the top half and doubling the result).
+For each grid point, testpoint() iterates z = z^2 + c up to MAXITER
+(2000) times; if |z| ever exceeds 2, the point is classified as OUTSIDE
+the set and counted in "numoutside". Points that never escape within
+2000 iterations are assumed to be INSIDE the set. The area is then
+estimated as:
+
+  area = 2 * (box width) * (box height) * (points inside / total points)
+
+Parallelization:
+-----------------
+- "#pragma omp parallel for" is placed on the OUTER loop (over i), so
+  the parallel region is started before the main loop as instructed,
+  and each of the NPOINTS rows of the grid is distributed evenly across
+  the available threads (schedule(static) gives each thread a
+  contiguous, roughly equal-sized block of rows - i.e. an equal number
+  of points per thread, using OpenMP's own default work division).
+- Loop variables j and the per-point cval struct are declared INSIDE
+  the loop body, which automatically makes them PRIVATE to each thread
+  (each thread gets its own copy on its own stack) - no explicit
+  private() clause is needed.
+- "numoutside" is declared with "reduction(+:numoutside)": each thread
+  keeps its own private running total of points it found outside the
+  set, and OpenMP automatically and safely adds all the per-thread
+  totals together at the end of the parallel region. Without this,
+  every thread incrementing the same shared "numoutside" variable at
+  the same time would cause a data race and an incorrect (usually too
+  low) final count.
+
+Results:
+---------
+The computed area (1.510318) is IDENTICAL for 1, 2, 3, and 4 threads,
+confirming the parallel version is correct and produces the same result
+regardless of how the work is split up. The timing shows a clear and
+close-to-linear speed-up as threads increase: ~2.38s (1 thread) -> ~2.08s
+(2) -> ~1.44s (3) -> ~1.09s (4), roughly a 2.2x speed-up going from 1 to
+4 threads. This is expected because the per-point work (up to 2000
+Mandelbrot iterations) is substantial and completely independent between
+points, so this problem parallelizes very well with minimal overhead
+relative to the actual computation.
+
+Extra exercise - different mapping of iterations to threads:
+----------------------------------------------------------------
+The program currently uses schedule(static) on the outer loop, which
+gives contiguous equal-sized row ranges to each thread. However, the
+amount of work per point is NOT uniform - points inside the Mandelbrot
+set always run the full 2000 iterations, while points far outside the
+set can escape almost immediately (just a few iterations). Since the
+set is concentrated in the middle of the scanned box, a static row-block
+split can give some threads mostly "quick, low-iteration" rows and
+others mostly "slow, near/inside the set" rows, causing load imbalance.
+
+This was tested directly: mandelbrot_dynamic.c is the same program with
+"schedule(static)" changed to "schedule(dynamic)" so idle threads pick
+up new rows on demand instead of being locked into a fixed pre-assigned
+block. Result:
+
+  schedule(static):                schedule(dynamic):
+  threads=1: area=1.510318 t=2.38s   threads=1: area=1.510318 t=2.40s
+  threads=2: area=1.510318 t=2.08s   threads=2: area=1.510318 t=1.18s
+  threads=3: area=1.510318 t=1.44s   threads=3: area=1.510318 t=0.79s
+  threads=4: area=1.510318 t=1.09s   threads=4: area=1.510318 t=0.59s
+
+The area is identical either way (correctness is unaffected by
+scheduling policy), but dynamic scheduling gives a much better, close to
+linear speed-up (~4.0x at 4 threads vs only ~2.2x with static),
+confirming that load imbalance was indeed the bottleneck with the static
+schedule, and that letting threads dynamically pick up rows as they
+finish their current one balances the uneven per-point workload much
+more effectively.

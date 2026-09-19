@@ -1,0 +1,12 @@
+thread # 0
+thread # 2
+thread # 1
+thread # 3
+Outside Barrier # 1
+Outside Barrier # 2
+Outside Barrier # 0
+Hi again from thread # 2
+Hi again from thread # 0
+Hi again from thread # 1
+Outside Barrier # 3
+Hi again from thread # 3

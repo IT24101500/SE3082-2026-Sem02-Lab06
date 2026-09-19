@@ -1,0 +1,4 @@
+fib(30) serial            = 832040, time = 0.002595 s
+fib(30) parallel (no cut) = 832040, time = 1.332366 s (threads = 4)
+fib(30) parallel (cutoff) = 832040, time = 0.002758 s (threads = 4)
+Results match: YES

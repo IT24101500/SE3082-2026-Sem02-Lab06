@@ -1,0 +1,12 @@
+-- threads=1 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.397614 s
+-- threads=2 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.204612 s
+-- threads=3 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.157447 s
+-- threads=4 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.137803 s

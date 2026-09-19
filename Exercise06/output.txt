@@ -1,0 +1,16 @@
+-- threads=1 --
+N = 1000000, STRIP = 8, threads = 1
+Verification: PASSED
+Time taken: 0.002938 s
+-- threads=2 --
+N = 1000000, STRIP = 8, threads = 2
+Verification: PASSED
+Time taken: 0.001976 s
+-- threads=4 --
+N = 1000000, STRIP = 8, threads = 4
+Verification: PASSED
+Time taken: 0.001230 s
+-- threads=8 --
+N = 1000000, STRIP = 8, threads = 8
+Verification: PASSED
+Time taken: 0.003465 s

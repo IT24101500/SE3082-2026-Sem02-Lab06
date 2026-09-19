@@ -1,0 +1,29 @@
+N = 2048 atoms, box length L = 13.9773, threads = 1, schedule(static,4)
+step   1  pot =    -5.8584  kin =     1.5000  total =    -4.3584  temp =   1.0000
+step   5  pot =    -5.8578  kin =     1.4994  total =    -4.3584  temp =   0.9996
+step  10  pot =    -5.8542  kin =     1.4975  total =    -4.3567  temp =   0.9983
+step  15  pot =    -5.8445  kin =     1.4944  total =    -4.3502  temp =   0.9962
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.402473 s
+-- threads=1 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.397614 s
+-- threads=2 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.204612 s
+-- threads=3 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.157447 s
+-- threads=4 --
+step  20  pot =    -5.8332  kin =     1.4897  total =    -4.3435  temp =   0.9931
+Time taken: 0.137803 s
+-- chunk=1 --
+Time taken: 0.168234 s
+-- chunk=4 --
+Time taken: 0.133892 s
+-- chunk=16 --
+Time taken: 0.150604 s
+-- chunk=64 --
+Time taken: 0.147314 s
+-- chunk=256 --
+Time taken: 0.152881 s
